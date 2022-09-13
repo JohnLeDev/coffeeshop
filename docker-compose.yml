@@ -1,0 +1,33 @@
+
+services:
+  db:
+    restart: always
+    volumes:
+     - ./coffeeshop_db:/home/node/app
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    build:
+      context: .
+      dockerfile: ./dconfig/db/Dockerfile
+    ports:
+      - '5432:5432'
+    expose:
+      - '5432'
+    network_mode: "bridge"
+  be:
+    build:
+      context: .
+      dockerfile: ./dconfig/be/Dockerfile
+    ports:
+      - '8080:8080'
+    expose:
+      - '8080'
+    depends_on:
+      - db
+
+    network_mode: "host"
+  
+volumes:
+  coffeeshop_db:
+    driver: local
